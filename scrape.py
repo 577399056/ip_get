@@ -10,3 +10,8 @@ print(html_content)
 # 将内容保存到输出文件中
 with open('output.txt', 'w') as f:
     f.write(html_content)
+
+# 将文件提交到仓库
+os.system("git add output.txt")
+os.system("git commit -m 'Update output.txt'")
+os.system("git push")
