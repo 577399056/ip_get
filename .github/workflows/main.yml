@@ -40,5 +40,5 @@ jobs:
         with:
           commit_message: "Create text file via GitHub Actions"
           branch: ${{ github.ref }}
-          #commit_user_name: "577399"
-          #commit_user_email: "577399056@qq.com"
+          #commit_user_name: "name"
+          #commit_user_email: "email"
