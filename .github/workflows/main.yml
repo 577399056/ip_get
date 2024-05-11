@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements.txt  # 如果有依赖的话，你可以创建一个 requirements.txt 文件并将依赖写在里面
 
       - name: Run Python script
-        run: python scrape.py #> ip.txt
+        run: python scrape.py > ip.txt
      
       #- name: Save content to file
         #run: |
