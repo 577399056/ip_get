@@ -1,5 +1,5 @@
 import requests
-
+import os
 # 获取网页内容
 url = 'https://ip.164746.xyz/'
 timeout=10
