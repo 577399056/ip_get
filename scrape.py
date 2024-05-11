@@ -8,8 +8,21 @@ response = requests.get(url,timeout=timeout)
 # 获取网页内容
 html_content = response.text
 ip_addresses = re.findall(r">(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})<", html_content)
-ip_addresses_joined = "\n".join(ip_addresses)
-print(str(ip_addresses_joined))
+#ip_addresses_joined = "\n".join(ip_addresses)
+#print(str(ip_addresses_joined))
+
+for ip in ip_addresses:
+    url = "https://www.ip.cn/ip/"+ip+".html"
+    response = requests.get(url, timeout=10)
+    html_content = response.text
+    #print(html_content)
+    pattern = re.compile(r'<div id="tab0_address">(.*?)</div>', re.DOTALL)
+    match = pattern.search(html_content)
+    if match:
+        address = match.group(1)
+        print(ip+"#"+address)
+
+
 # 将内容保存到输出文件中
 #with open('ip.txt', 'w') as f:
     #f.write(ip_addresses_joined)
