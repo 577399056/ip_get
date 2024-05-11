@@ -25,5 +25,5 @@ for ip in ip_addresses:
 
 print(ip_all)
 # 将内容保存到输出文件中
-with open('ip2.txt', 'w') as f:
+with open('ip.txt', 'w') as f:
     f.write(ip_all)
