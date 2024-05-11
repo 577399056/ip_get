@@ -1,0 +1,19 @@
+name: Python Web Scraping
+
+on:
+  workflow_dispatch:
+
+jobs:
+  web-scraping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Scrape web page
+        run: python scrape.py
+      - name: Save content to file
+        run: cat output.txt > ip.txt
