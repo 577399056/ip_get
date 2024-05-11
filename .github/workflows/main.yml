@@ -6,6 +6,8 @@ on:
 jobs:
   create_file_job:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 添加这一行以获取对内容的写入权限
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
