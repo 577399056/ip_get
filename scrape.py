@@ -8,12 +8,5 @@ response = requests.get(url,timeout=timeout)
 html_content = response.text
 print(html_content)
 # 将内容保存到输出文件中
-with open('output.txt', 'w') as f:
+with open('ip.txt', 'w') as f:
     f.write(html_content)
-
-# 将文件提交到仓库
-os.system("git config --global user.email '你577399056@qq.com'")
-os.system("git config --global user.name '577399'")
-os.system("git add output.txt")
-os.system("git commit -m 'Update output.txt'")
-os.system("git push")
