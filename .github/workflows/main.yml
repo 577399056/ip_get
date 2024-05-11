@@ -23,11 +23,7 @@ jobs:
           pip install -r requirements.txt  # 如果有依赖的话，你可以创建一个 requirements.txt 文件并将依赖写在里面
 
       - name: Run Python script
-        run: python scrape.py
-      - name: Save content to file
-        run: |
-          echo ${{ steps.run.outputs.script_output }} > ip.txt  # 将脚本输出的内容保存到文件中
-        id: run
+        run: python scrape.py > ip.txt
 
       #- name: Create Text File
         #run: echo "This is a text file created by GitHub Actions" > ip.txt
