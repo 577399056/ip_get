@@ -11,6 +11,7 @@ ip_addresses = re.findall(r">(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})<", html_conten
 #ip_addresses_joined = "\n".join(ip_addresses)
 #print(str(ip_addresses_joined))
 
+ip_all = ""
 for ip in ip_addresses:
     url = "https://www.ip.cn/ip/"+ip+".html"
     response = requests.get(url, timeout=10)
@@ -20,9 +21,9 @@ for ip in ip_addresses:
     match = pattern.search(html_content)
     if match:
         address = match.group(1)
-        print(ip+"#"+address)
+        ip_all += str(ip)+"#"+str(address)+"\n"
 
-
+print(ip_all)
 # 将内容保存到输出文件中
 #with open('ip.txt', 'w') as f:
     #f.write(ip_addresses_joined)
