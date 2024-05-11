@@ -15,5 +15,3 @@ jobs:
         run: pip install requests
       - name: Scrape web page
         run: python scrape.py
-      - name: Save content to file
-        run: cat output.txt > ip.txt
