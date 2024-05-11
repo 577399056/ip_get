@@ -1,6 +1,8 @@
 name: Python Web Scraping
 
 on:
+  schedule:
+    - cron: '*/6 * * * *'
   workflow_dispatch:
 
 jobs:
