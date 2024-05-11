@@ -9,7 +9,7 @@ response = requests.get(url,timeout=timeout)
 html_content = response.text
 ip_addresses = re.findall(r">(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})<", html_content)
 ip_addresses_joined = "\n".join(ip_addresses)
-print(ip_addresses_joined)
+print(str(ip_addresses_joined))
 # 将内容保存到输出文件中
 #with open('ip.txt', 'w') as f:
     #f.write(html_content)
