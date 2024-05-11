@@ -28,10 +28,10 @@ jobs:
       #- name: Create Text File
         #run: echo "This is a text file created by GitHub Actions" > ip.txt
 
-      #- name: Commit and Push Changes
-        #uses: stefanzweifel/git-auto-commit-action@v4
-        #with:
-          #commit_message: "Create text file via GitHub Actions"
-          #branch: ${{ github.ref }}
-          #commit_user_name: "577399"
-          #commit_user_email: "577399056@qq.com"
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Create text file via GitHub Actions"
+          branch: ${{ github.ref }}
+          commit_user_name: "577399"
+          commit_user_email: "577399056@qq.com"
