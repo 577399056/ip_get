@@ -2,7 +2,8 @@ import requests
 import re
 import os
 # 获取网页内容
-url = 'https://ip.164746.xyz/'
+# url = 'https://ip.164746.xyz/'
+url = 'https://cf.090227.xyz/'
 timeout=10
 response = requests.get(url,timeout=timeout)
 # 获取网页内容
