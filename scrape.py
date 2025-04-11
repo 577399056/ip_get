@@ -20,12 +20,13 @@ def fetch_with_retries(url, timeout=10, retries=3, delay=3):
                 print("多次重试失败，跳过该请求。")
     return None
 
-# 提取 IP 列表
+# 提取前 10 个 IP 列表
 def get_ip_list(ip_source_url):
     html = fetch_with_retries(ip_source_url)
     if not html:
         return []
-    return re.findall(r">(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})<", html)
+    ip_all = re.findall(r">(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})<", html)
+    return ip_all[:10]  # 只取前 10 个
 
 # 获取每个 IP 的归属地
 def get_ip_address(ip):
