@@ -36,7 +36,7 @@ def get_ip_address(ip):
     html = fetch_with_retries(detail_url)
     if not html:
         return "未知地址"
-    data = json.loads(text)
+    data = json.loads(html)
     addr = data.get("addr", "")  
     return addr
     #match = re.search(r'<div id="tab0_address">(.*?)</div>', html, re.DOTALL)
