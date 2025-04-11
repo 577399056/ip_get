@@ -112,7 +112,7 @@ def get_ip_list(ip_source_url):
     if not html:
         return []
     ip_all = re.findall(r">(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})<", html)
-    return ip_all[:20]  # 只取前 10 个
+    return ip_all[:6]  # 只取前 10 个
 
 # 筛选最终更新的ip
 def get_dns_list(ip_list, dns_records):
