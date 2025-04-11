@@ -23,7 +23,7 @@ jobs:
       - name: 'run scrape.py'
         run: python scrape.py
       - name: Upload ip.txt as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ip-file
           path: ip.txt  # 上传 ip.txt 文件作为工作流的构件
