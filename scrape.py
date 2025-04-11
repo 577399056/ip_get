@@ -1,6 +1,7 @@
 import requests
 import re
 import time
+import json
 
 # 获取网页内容并带有重试机制
 def fetch_with_retries(url, timeout=10, retries=3, delay=3):
@@ -30,15 +31,18 @@ def get_ip_list(ip_source_url):
 
 # 获取每个 IP 的归属地
 def get_ip_address(ip):
-    detail_url = f"https://www.ip.cn/ip/{ip}.html"
+    #detail_url = f"https://www.ip.cn/ip/{ip}.html"
+    detail_url = f"https://whois.pconline.com.cn/ipJson.jsp?ip={ip}&json=true"
     html = fetch_with_retries(detail_url)
     if not html:
         return "未知地址"
-
-    match = re.search(r'<div id="tab0_address">(.*?)</div>', html, re.DOTALL)
-    if match:
-        return match.group(1).strip()
-    return "未知地址"
+    data = json.loads(text)
+    addr = data.get("addr", "")  
+    return addr
+    #match = re.search(r'<div id="tab0_address">(.*?)</div>', html, re.DOTALL)
+    #if match:
+        #return match.group(1).strip()
+    #return "未知地址"
 
 # 主逻辑封装
 def main():
@@ -53,11 +57,11 @@ def main():
 
     results = []
     for ip in ip_list:
-        # address = get_ip_address(ip)
-        # results.append(f"{ip}:443#{address}")
-        results.append(f"{ip}:443#weizhi")
-        # print(f"{ip} → {address}")
-        print(f"{ip}")
+        address = get_ip_address(ip)
+        results.append(f"{ip}:443#{address}")
+        #results.append(f"{ip}:443#weizhi")
+        print(f"{ip} → {address}")
+        #print(f"{ip}")
         time.sleep(0.5)  # 避免访问过快被封
 
     # 写入文件
