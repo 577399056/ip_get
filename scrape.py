@@ -22,7 +22,7 @@ for ip in ip_addresses:
     match = pattern.search(html_content)
     if match:
         address = match.group(1)
-        ip_all += str(ip)+":8443#"+str(address)+"\n"
+        ip_all += str(ip)+":443#"+str(address)+"\n"
 
 print(ip_all)
 # 将内容保存到输出文件中
