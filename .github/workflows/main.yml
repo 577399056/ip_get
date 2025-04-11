@@ -2,43 +2,23 @@ name: Python Web Scraping
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
-  create_file_job:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # 添加这一行以获取对内容的写入权限
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+      - name: 'Set up Python'
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt  # 如果有依赖的话，你可以创建一个 requirements.txt 文件并将依赖写在里面
-
-      - name: Run Python script
+          python-version: 3.12
+      - name: 'Install dependencies'
+        run: if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: 'run scrape.py'
         run: python scrape.py
-     
-      #- name: Save content to file
-        #run: |
-          #echo ${{ steps.run.outputs.script_output }} > content_file.txt  # 将脚本输出的内容保存到文件中
-        #id: run
-
-      #- name: Create Text File
-        #run: echo "This is a text file created by GitHub Actions" > ip.txt
-
-      - name: Commit and Push Changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        #with:
-          #commit_message: "Create text file via GitHub Actions"
-          #branch: ${{ github.ref }}
-          #commit_user_name: "ip_get Action"
-          #commit_user_email: "action@github.com"
