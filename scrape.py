@@ -53,9 +53,11 @@ def main():
 
     results = []
     for ip in ip_list:
-        address = get_ip_address(ip)
-        results.append(f"{ip}:443#{address}")
-        print(f"{ip} → {address}")
+        # address = get_ip_address(ip)
+        # results.append(f"{ip}:443#{address}")
+        results.append(f"{ip}:443#weizhi")
+        # print(f"{ip} → {address}")
+        print(f"{ip}")
         time.sleep(0.5)  # 避免访问过快被封
 
     # 写入文件
