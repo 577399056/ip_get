@@ -1,30 +1,67 @@
 import requests
 import re
-import os
-# 获取网页内容
-# url = 'https://ip.164746.xyz/'
-url = 'https://cf.090227.xyz/'
-timeout=10
-response = requests.get(url,timeout=timeout)
-# 获取网页内容
-html_content = response.text
-ip_addresses = re.findall(r">(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})<", html_content)
-#ip_addresses_joined = "\n".join(ip_addresses)
-#print(str(ip_addresses_joined))
+import time
 
-ip_all = ""
-for ip in ip_addresses:
-    url = "https://www.ip.cn/ip/"+ip+".html"
-    response = requests.get(url, timeout=10)
-    html_content = response.text
-    #print(html_content)
-    pattern = re.compile(r'<div id="tab0_address">(.*?)</div>', re.DOTALL)
-    match = pattern.search(html_content)
+# 获取网页内容并带有重试机制
+def fetch_with_retries(url, timeout=10, retries=3, delay=3):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+    }
+    for attempt in range(retries):
+        try:
+            response = requests.get(url, timeout=timeout, headers=headers)
+            response.raise_for_status()  # 确保状态码为 200
+            return response.text
+        except requests.exceptions.RequestException as e:
+            print(f"[{attempt+1}/{retries}] 请求失败：{url}，错误：{e}")
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                print("多次重试失败，跳过该请求。")
+    return None
+
+# 提取 IP 列表
+def get_ip_list(ip_source_url):
+    html = fetch_with_retries(ip_source_url)
+    if not html:
+        return []
+    return re.findall(r">(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})<", html)
+
+# 获取每个 IP 的归属地
+def get_ip_address(ip):
+    detail_url = f"https://www.ip.cn/ip/{ip}.html"
+    html = fetch_with_retries(detail_url)
+    if not html:
+        return "未知地址"
+
+    match = re.search(r'<div id="tab0_address">(.*?)</div>', html, re.DOTALL)
     if match:
-        address = match.group(1)
-        ip_all += str(ip)+":443#"+str(address)+"\n"
+        return match.group(1).strip()
+    return "未知地址"
 
-print(ip_all)
-# 将内容保存到输出文件中
-with open('ip.txt', 'w') as f:
-    f.write(ip_all)
+# 主逻辑封装
+def main():
+    ip_source_url = "https://cf.090227.xyz/"
+    ip_list = get_ip_list(ip_source_url)
+
+    if not ip_list:
+        print("未获取到任何 IP。")
+        return
+
+    print(f"共获取到 {len(ip_list)} 个 IP，开始查询归属地...")
+
+    results = []
+    for ip in ip_list:
+        address = get_ip_address(ip)
+        results.append(f"{ip}:443#{address}")
+        print(f"{ip} → {address}")
+        time.sleep(0.5)  # 避免访问过快被封
+
+    # 写入文件
+    with open("ip.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(results))
+
+    print("\n✅ 查询完成，已保存到 ip.txt")
+
+if __name__ == "__main__":
+    main()
