@@ -151,6 +151,7 @@ def main():
         # 执行 DNS 变更
         dns = update_dns_record(dns_records[index], CF_DNS_NAME, ip_address)
         push_plus_content.append(dns)
+        time.sleep(1)
 
     push_plus('\n'.join(push_plus_content))
 
