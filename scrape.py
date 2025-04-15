@@ -58,6 +58,7 @@ def main():
     results = []
     for ip in ip_list:
         address = get_ip_address(ip)
+        address = re.sub(r"\s+", "", address)
         results.append(f"{ip}:443#{address}")
         #results.append(f"{ip}:443#weizhi")
         print(f"{ip} → {address}")
