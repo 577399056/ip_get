@@ -14,12 +14,14 @@ CF_DNS_NAME     =   os.environ["CF_DNS_NAME"]
 # pushplus_token
 PUSHPLUS_TOKEN  =   os.environ["PUSHPLUS_TOKEN"]
 
+# 企业微信机器人
+WXBOTKEY        =   os.environ["WXBOTKEY"]
+
 headers = {
     'Authorization': f'Bearer {CF_API_TOKEN}',
     'Content-Type': 'application/json'
 }
 
-WXBOTKEY  =  os.environ["WXBOTKEY"]
 
 def send_wechat_work_message(message):
     """
