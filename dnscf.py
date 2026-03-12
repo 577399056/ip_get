@@ -19,6 +19,33 @@ headers = {
     'Content-Type': 'application/json'
 }
 
+weWorkBotKey = os.environ["weWorkBotKey"]
+WEBHOOK = f'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={weWorkBotKey}'
+def send_wechat_work_message(webhook_url, message):
+    """
+    快速发送企业微信消息
+    :param webhook_url: 完整的Webhook URL
+    :param message: 要发送的文本内容
+    """
+    data = {
+        "msgtype": "text",
+        "text": {
+            "content": message
+        }
+    }
+    
+    response = requests.post(
+        webhook_url,
+        headers={'Content-Type': 'application/json'},
+        data=json.dumps(data)
+    )
+    
+    if response.json().get('errcode') == 0:
+        print("发送成功")
+    else:
+        print("发送失败")
+
+
 def get_cf_speed_test_ip(timeout=10, max_retries=5):
     for attempt in range(max_retries):
         try:
@@ -157,6 +184,7 @@ def main():
         time.sleep(1)
 
     push_plus('\n'.join(push_plus_content))
+    send_wechat_work_message(WEBHOOK, push_plus_content)
 
 if __name__ == '__main__':
     main()
