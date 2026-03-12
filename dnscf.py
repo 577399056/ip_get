@@ -19,14 +19,15 @@ headers = {
     'Content-Type': 'application/json'
 }
 
-weWorkBotKey = os.environ["weWorkBotKey"]
-WEBHOOK = f'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={weWorkBotKey}'
-def send_wechat_work_message(webhook_url, message):
+WXBOTKEY  =  os.environ["WXBOTKEY"]
+
+def send_wechat_work_message(message):
     """
     快速发送企业微信消息
     :param webhook_url: 完整的Webhook URL
     :param message: 要发送的文本内容
-    """
+    """  
+    webhook_url = f'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={WXBOTKEY}'
     data = {
         "msgtype": "text",
         "text": {
@@ -184,7 +185,7 @@ def main():
         time.sleep(1)
 
     push_plus('\n'.join(push_plus_content))
-    send_wechat_work_message(WEBHOOK, push_plus_content)
+    send_wechat_work_message(push_plus_content)
 
 if __name__ == '__main__':
     main()
