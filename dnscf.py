@@ -133,7 +133,7 @@ def get_dns_list(ip_list, dns_records):
     
 # 主函数
 def main():
-    ip_source_url = "https://cf.090227.xyz/"
+    ip_source_url = "https://cf.090227.xyz/ct?ips=6"
     ip_list = get_ip_list(ip_source_url)
     #ip_list = ""
     print("获取的优选ip",ip_list)
