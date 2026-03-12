@@ -98,6 +98,7 @@ def fetch_with_retries(url, timeout=10, retries=3, delay=3):
             response = requests.get(url, timeout=timeout)#, headers=headers)
             response.raise_for_status()  # 确保状态码为 200
             return response.text
+            print(response)
         except requests.exceptions.RequestException as e:
             print(f"[{attempt+1}/{retries}] 请求失败：{url}，错误：{e}")
             if attempt < retries - 1:
