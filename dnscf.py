@@ -113,7 +113,8 @@ def get_ip_list(ip_source_url):
     print(html)
     if not html:
         return []
-    ip_all = re.findall(r">(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})<", html)
+    ip_all = re.findall(r"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", html)
+    print(ip_all)
     return ip_all[:3]  # 只取前 10 个
 
 # 筛选最终更新的ip
