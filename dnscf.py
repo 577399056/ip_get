@@ -15,7 +15,7 @@ CF_DNS_NAME     =   os.environ["CF_DNS_NAME"]
 PUSHPLUS_TOKEN  =   os.environ["PUSHPLUS_TOKEN"]
 
 # 企业微信机器人
-WX_KEY  =   os.environ["WX_KEY"]
+#WX_KEY  =   os.environ["WX_KEY"]
 
 headers = {
     'Authorization': f'Bearer {CF_API_TOKEN}',
@@ -29,7 +29,7 @@ def send_wechat_work_message(message):
     :param webhook_url: 完整的Webhook URL
     :param message: 要发送的文本内容
     """  
-    webhook_url = f'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={WX_KEY}'
+    webhook_url = f'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={PUSHPLUS_TOKEN}'
     data = {
         "msgtype": "text",
         "text": {
