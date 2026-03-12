@@ -187,7 +187,7 @@ def main():
         time.sleep(1)
 
     #push_plus('\n'.join(push_plus_content))
-    send_wechat_work_message(push_plus_content)
+    send_wechat_work_message('\n'.join(push_plus_content))
 
 if __name__ == '__main__':
     main()
