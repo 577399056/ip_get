@@ -6,17 +6,16 @@ import re
 import ipaddress
 
 # ====================== 【配置区 - 可以直接修改参数】 ======================
-# 优选接口地址（电信）
-IP_SOURCE_URL = "https://cf.vvhan.com/api/ip"
+# 数据源仅使用 vvhan网页
+VVHAN_URL = "https://cf.vvhan.com/"
 MAX_IP_COUNT = 6               # 需要维护多少条DNS A记录
-UPDATE_SLEEP_SEC = 1          # CF每次更新之间间隔秒数
+UPDATE_SLEEP_SEC = 1           # CF每次更新之间间隔秒数
 FETCH_TIMEOUT = 10             # http请求超时
 RETRY_TIMES = 3                # 请求重试次数
 RETRY_DELAY = 3                # 重试间隔
 
 NOTIFY_WHEN_NO_CHANGE = True   # True:即使没有DNS变更也推送消息；False：只有发生变更才推送
 ENABLE_PUSH = True             # 推送总开关
-
 # ====================== 环境变量（青龙面板设置） ======================
 CF_API_TOKEN = os.environ["CF_API_TOKEN"]
 CF_ZONE_ID = os.environ["CF_ZONE_ID"]
@@ -25,7 +24,7 @@ PUSHPLUS_TOKEN = os.environ["PUSHPLUS_TOKEN"]
 
 HEADERS_CF = {
     'Authorization': f'Bearer {CF_API_TOKEN}',
-    'Content-Type': 'application/json'
+    'Content‑Type': 'application/json'
 }
 
 
@@ -48,8 +47,8 @@ def send_pushplus(content: str):
     }
     try:
         resp = requests.post(url,
-                             data=json.dumps(data).encode("utf-8"),
-                             headers={'Content-Type': 'application/json'},
+                             data=json.dumps(data).encode("utf‑8"),
+                             headers={'Content‑Type': 'application/json'},
                              timeout=15)
         resp.raise_for_status()
         print("Pushplus推送发送完成")
@@ -59,16 +58,19 @@ def send_pushplus(content: str):
         return False
 
 
-def fetch_with_retries(url, timeout=10, retries=3, delay=3):
+def fetch_with_retries(url, timeout=10, retries=3, delay=3, extra_headers=None):
     """
     HTTP GET请求封装，自带重试机制，网络失败自动重试指定次数
     :param url: 需要访问的目标网址
     :param timeout: 请求超时时间，单位秒
     :param retries: 最大重试次数
     :param delay: 每次重试之间的等待间隔，单位秒
+    :param extra_headers: 额外自定义http头字典
     :return: 成功返回网页文本内容；全部失败后返回 None
     """
-    req_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0"}
+    req_headers = {"User‑Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0"}
+    if extra_headers is not None:
+        req_headers.update(extra_headers)
     for attempt in range(retries):
         try:
             resp = requests.get(url, timeout=timeout, headers=req_headers)
@@ -94,27 +96,29 @@ def is_valid_ipv4(ip_str: str) -> bool:
         return False
 
 
-def get_ip_list(ip_source_url: str, max_num: int):
+def get_vvhan_telecom_ip_list(max_num: int):
     """
-    从优选IP网页接口获取ip列表，正则提取 + ip合法性校验 + 去重
-    :param ip_source_url: IP优选接口地址
-    :param max_num: 返回最多多少个ip
-    :return: list[str] 清洗之后的ip数组；失败返回空列表[]
+    从vvhan网页抓取电信优选IP，解析表格，只取电信运营商
+    :param max_num:最多返回多少个ip
+    :return: list[str] ip列表，失败返回空数组
     """
-    html = fetch_with_retries(ip_source_url, timeout=FETCH_TIMEOUT, retries=RETRY_TIMES, delay=RETRY_DELAY)
+    html = fetch_with_retries(VVHAN_URL, timeout=FETCH_TIMEOUT, retries=RETRY_TIMES, delay=RETRY_DELAY,
+                              extra_headers={"Referer": "https://cf.vvhan.com/"})
     if not html:
-        print("优选IP接口请求失败！")
+        print("vvhan网页请求失败")
         return []
-    raw_matches = re.findall(r"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", html)
+    #正则匹配表格行 | 电信 | ip |延迟 |速度
+    pattern = r"\|\s*(电信)\s*\|\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*\|"
+    raw_items = re.findall(pattern, html)
     valid_ips = []
     seen = set()
-    for item in raw_matches:
-        if is_valid_ipv4(item) and item not in seen:
-            seen.add(item)
-            valid_ips.append(item)
+    for isp, ip_str in raw_items:
+        if is_valid_ipv4(ip_str) and ip_str not in seen:
+            seen.add(ip_str)
+            valid_ips.append(ip_str)
         if len(valid_ips) >= max_num:
             break
-    print(f"清洗之后有效优选IP列表: {valid_ips}")
+    print(f"vvhan抓取‑电信清洗后IP列表: {valid_ips}")
     return valid_ips
 
 
@@ -149,11 +153,11 @@ def update_dns_record(record_id: str, name: str, cf_ip: str):
     :param record_id: 需要修改的DNS记录唯一ID
     :param name: 域名名称
     :param cf_ip: 设置新优选IP地址
-    :return: str 返回本次更新结果消息；None=更新异常
+    :return: str 返回本次更新结果消息
     """
     url = f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE_ID}/dns_records/{record_id}'
     payload = {"type": "A", "name": name, "content": cf_ip}
-    t = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    t = time.strftime("%Y‑%m‑%d %H:%M:%S", time.localtime())
     try:
         resp = requests.put(url, headers=HEADERS_CF, json=payload, timeout=15)
         if resp.status_code == 429:
@@ -188,20 +192,18 @@ def get_dns_list(ip_list: list, dns_records: dict):
 
 def main():
     """
-    主函数执行一次完整优选DNS更新流程
+    主函数：仅使用vvhan网页数据源获取电信优选IP并更新Cloudflare DNS
     """
     start_time = time.time()
     push_content = []
-    # 获取优选IP
-    ip_list = get_ip_list(IP_SOURCE_URL, MAX_IP_COUNT)
+    ip_list = get_vvhan_telecom_ip_list(MAX_IP_COUNT)
     if len(ip_list) == 0:
-        push_content.append("❌错误：优选IP接口返回为空，本次脚本结束")
+        push_content.append("❌错误：vvhan网页没有抓取到电信优选IP，本次脚本结束")
         report_text = "\n".join(push_content)
         send_pushplus(report_text)
         print(report_text)
         return
 
-    # 获取当前CF dns记录
     dns_map = get_dns_records(CF_DNS_NAME)
     if not dns_map:
         push_content.append("❌错误：读取Cloudflare DNS记录失败！检查token/zid权限")
@@ -226,7 +228,6 @@ def main():
             push_content.append(res)
             time.sleep(UPDATE_SLEEP_SEC)
 
-    # 统计运行耗时
     cost = round(time.time() - start_time,2)
     push_content.append(f"\n脚本运行耗时 {cost} s")
     report_text = "\n".join(push_content)
