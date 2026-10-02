@@ -24,7 +24,7 @@ PUSHPLUS_TOKEN = os.environ["PUSHPLUS_TOKEN"]
 
 HEADERS_CF = {
     'Authorization': f'Bearer {CF_API_TOKEN}',
-    'Content‑Type': 'application/json'
+    'Content-Type': 'application/json'
 }
 
 
@@ -47,8 +47,8 @@ def send_pushplus(content: str):
     }
     try:
         resp = requests.post(url,
-                             data=json.dumps(data).encode("utf‑8"),
-                             headers={'Content‑Type': 'application/json'},
+                             data=json.dumps(data).encode("utf-8"),
+                             headers={'Content-Type': 'application/json'},
                              timeout=15)
         resp.raise_for_status()
         print("Pushplus推送发送完成")
@@ -68,7 +68,7 @@ def fetch_with_retries(url, timeout=10, retries=3, delay=3, extra_headers=None):
     :param extra_headers: 额外自定义http头字典
     :return: 成功返回网页文本内容；全部失败后返回 None
     """
-    req_headers = {"User‑Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0"}
+    req_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0"}
     if extra_headers is not None:
         req_headers.update(extra_headers)
     for attempt in range(retries):
@@ -157,7 +157,7 @@ def update_dns_record(record_id: str, name: str, cf_ip: str):
     """
     url = f'https://api.cloudflare.com/client/v4/zones/{CF_ZONE_ID}/dns_records/{record_id}'
     payload = {"type": "A", "name": name, "content": cf_ip}
-    t = time.strftime("%Y‑%m‑%d %H:%M:%S", time.localtime())
+    t = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     try:
         resp = requests.put(url, headers=HEADERS_CF, json=payload, timeout=15)
         if resp.status_code == 429:
