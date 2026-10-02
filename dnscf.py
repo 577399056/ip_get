@@ -7,7 +7,7 @@ import ipaddress
 
 # ====================== 【配置区 - 可以直接修改参数】 ======================
 # 优选接口地址（电信）
-IP_SOURCE_URL = "https://cf.090227.xyz/ct?ips=6"
+IP_SOURCE_URL = "https://cf.vvhan.com/api/ip"
 MAX_IP_COUNT = 6               # 需要维护多少条DNS A记录
 UPDATE_SLEEP_SEC = 1          # CF每次更新之间间隔秒数
 FETCH_TIMEOUT = 10             # http请求超时
